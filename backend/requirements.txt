@@ -1,0 +1,10 @@
+﻿fastapi>=0.111
+uvicorn[standard]>=0.30
+pydantic>=2.7
+transformers>=4.42
+catboost>=1.2
+numpy
+pandas
+pillow
+torch
+torchvision

@@ -1,0 +1,4 @@
+﻿streamlit>=1.36
+requests
+pillow
+torch
