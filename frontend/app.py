@@ -38,7 +38,7 @@ st.header("🔗 Проверка соединения с FastAPI")
 
 if BACKEND_URL:
     try:
-        response = requests.get(f"{BACKEND_URL}/docs", timeout=3)
+        response = requests.get(f"{BACKEND_URL}/health", timeout=5)
         if response.status_code == 200:
             st.success("✅ Соединение успешно!")
         else:
