@@ -89,12 +89,40 @@ with tab_text:
 with tab_image:
     st.subheader("Классификация изображений (ResNet18)")
     st.write("Загрузите картинку — ResNet18 выдаст топ-3 класса.")
-    uploaded_file = st.file_uploader("Файл изображения", type=["png", "jpg", "jpeg", "bmp"], accept_multiple_files=False)
+
+    # 👉 Добавили альтернативу: загрузка по URL
+    uploaded_file = st.file_uploader(
+        "Файл изображения",
+        type=["png", "jpg", "jpeg", "bmp"],
+        accept_multiple_files=False
+    )
+    image_url = st.text_input("...или вставьте URL изображения (http/https)", placeholder="https://example.com/image.jpg")
+
     if st.button("Распознать", key="image_button"):
-        if uploaded_file is None:
-            st.warning("Сначала выберите файл.")
+        # --- 1️⃣ Проверяем источник ---
+        if uploaded_file is None and not image_url.strip():
+            st.warning("Сначала выберите файл или укажите URL.")
         else:
-            file_bytes = uploaded_file.getvalue()
+            # --- 2️⃣ Получаем байты ---
+            file_bytes = None
+            file_name = "image.jpg"
+
+            if uploaded_file is not None:
+                # Из файла
+                file_bytes = uploaded_file.getvalue()
+                file_name = uploaded_file.name or "image.jpg"
+            else:
+                # Из URL
+                try:
+                    resp = requests.get(image_url.strip(), timeout=10)
+                    resp.raise_for_status()
+                    file_bytes = resp.content
+                    file_name = image_url.split("/")[-1] or "image.jpg"
+                except Exception as exc:
+                    st.error(f"Не удалось скачать изображение по URL: {exc}")
+                    st.stop()
+
+            # --- 3️⃣ Предпросмотр ---
             try:
                 preview_image = Image.open(io.BytesIO(file_bytes)).convert("RGB")
             except Exception as exc:  # pylint: disable=broad-except
@@ -103,7 +131,7 @@ with tab_image:
                 st.image(preview_image, caption="Предпросмотр загруженного изображения", use_container_width=True)
                 with st.spinner("Анализ изображения..."):
                     try:
-                        result = call_image_endpoint(uploaded_file.name or "image.jpg", file_bytes)
+                        result = call_image_endpoint(file_name, file_bytes)
                     except requests.RequestException as exc:
                         st.error(f"Не удалось получить ответ от бэкенда: {exc}")
                     else:
