@@ -6,7 +6,7 @@ from typing import Dict
 import requests
 import streamlit as st
 from PIL import Image
-
+BACKEND_URL_YC = st.secrets['BACKEND_URL_YC']
 st.sidebar.title("⚙️ Настройки backend")
 
 # Варианты выбора
@@ -21,7 +21,7 @@ if backend_option == "Локальный FastAPI (127.0.0.1:8000)":
     BACKEND_URL = "http://127.0.0.1:8000"
 elif backend_option == "Мой сервер (Yandex Cloud)":
     # 👉 Укажи свой реальный публичный IP или домен
-    BACKEND_URL = "http://51.250.98.192:8000/"
+    BACKEND_URL = BACKEND_URL_YC
 else:
     BACKEND_URL = st.sidebar.text_input(
         "Введите адрес проброшенного порта вашего локального FastAPI:",
