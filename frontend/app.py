@@ -10,7 +10,41 @@ import requests
 import streamlit as st
 from PIL import Image
 
-BACKEND_URL = "http://127.0.0.1:8000"
+st.sidebar.title("⚙️ Настройки backend")
+
+# Варианты выбора
+backend_option = st.sidebar.radio(
+    "Выберите источник данных:",
+    ("Локальный FastAPI (127.0.0.1:8000)", "Ввести свой URL")
+)
+
+# Если выбран локальный сервер
+if backend_option == "Локальный FastAPI (127.0.0.1:8000)":
+    BACKEND_URL = "http://127.0.0.1:8000"
+else:
+    BACKEND_URL = st.sidebar.text_input(
+        "Введите адрес вашего FastAPI:",
+        placeholder="https://your-tunnel-url.devtunnels.ms",
+    )
+
+# Проверка и отображение текущего выбора
+if BACKEND_URL:
+    st.sidebar.success(f"Текущий backend: {BACKEND_URL}")
+else:
+    st.sidebar.warning("Введите URL или выберите локальный сервер.")
+
+# --- Пример использования ---
+st.header("🔗 Проверка соединения с FastAPI")
+
+if BACKEND_URL:
+    try:
+        response = requests.get(f"{BACKEND_URL}/docs", timeout=3)
+        if response.status_code == 200:
+            st.success("✅ Соединение успешно!")
+        else:
+            st.error(f"⚠️ Ошибка: код {response.status_code}")
+    except Exception as e:
+        st.error(f"❌ Не удалось подключиться: {e}")
 
 
 def call_text_endpoint(text: str) -> Dict[str, object]:
