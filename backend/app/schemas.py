@@ -1,7 +1,4 @@
-﻿import torch
-assert torch.cuda.is_available(), "CUDA не обнаружена. Установите PyTorch с поддержкой CUDA (см. README_GPU.md)."
-DEVICE = "cuda"
-
+﻿
 """Pydantic-схемы для сериализации запросов и ответов."""
 
 from typing import Dict, List

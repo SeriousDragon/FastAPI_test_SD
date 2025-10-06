@@ -7,8 +7,12 @@ import pandas as pd
 from catboost import CatBoostClassifier
 import torch
 
-assert torch.cuda.is_available(), "CUDA не обнаружена. Установите PyTorch с поддержкой CUDA (см. README_GPU.md)."
-DEVICE = "cuda"
+if torch.cuda.is_available():
+    DEVICE = "cuda"
+    print(f"✅ Используется GPU: {torch.cuda.get_device_name(0)}")
+else:
+    DEVICE = "cpu"
+    print("⚠️ CUDA не обнаружена, используется CPU.")
 
 """GPU-классификатор текстов с обучением CatBoost при первом запуске."""
 

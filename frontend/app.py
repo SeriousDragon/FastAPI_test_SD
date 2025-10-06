@@ -1,9 +1,6 @@
 ﻿import io
 from typing import Dict
 
-
-DEVICE = "cuda"
-
 """Минимальный Streamlit-интерфейс для общения с FastAPI-бэкендом."""
 
 import requests
